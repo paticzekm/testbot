@@ -24,7 +24,7 @@ EMOJI_ROLE_MAP = {
 async def on_ready():
     global log_channel
     log_channel = bot.get_channel(LOG_CHANNEL_ID)
-    log(f"✅ Bot is online as {bot.user}")
+    await log(f"✅ Bot is online as {bot.user}")
     print(f"Bot is online as {bot.user}")
 
     guild = bot.get_guild(GUILD_ID)
@@ -32,14 +32,14 @@ async def on_ready():
     try:
         message = await channel.fetch_message(MESSAGE_ID)
     except Exception as e:
-        log(f"Failed to fetch message: {e}")
+        await log(f"Failed to fetch message: {e}")
         return
 
     for emoji in EMOJI_ROLE_MAP.keys():
         try:
             await message.add_reaction(emoji)
         except Exception as e:
-            log(f"Failed to add reaction {emoji}: {e}")
+            await log(f"Failed to add reaction {emoji}: {e}")
 
 @bot.event
 async def on_raw_reaction_add(payload):
@@ -57,7 +57,7 @@ async def on_raw_reaction_add(payload):
 
     if role and member and not member.bot:
         await member.add_roles(role)
-        log(f"Added role {role_name} to {member}")
+        await log(f"Added role {role_name} to {member}")
 
 @bot.event
 async def on_raw_reaction_remove(payload):
@@ -75,7 +75,7 @@ async def on_raw_reaction_remove(payload):
 
     if role and member and not member.bot:
         await member.remove_roles(role)
-        log(f"Removed role {role_name} from {member}")
+        await log(f"Removed role {role_name} from {member}")
 
 async def log(message: str):
     print(message)
