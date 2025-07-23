@@ -10,8 +10,9 @@ intents.reactions = True
 bot = commands.Bot(command_prefix="!", intents=intents)
 
 MESSAGE_ID = int(os.getenv("MESSAGE_ID"))
-GUILD_ID = int(os.getenv("GUILD_ID"))         # Add your server ID as env variable
-CHANNEL_ID = int(os.getenv("CHANNEL_ID"))     # Add your channel ID as env variable
+GUILD_ID = int(os.getenv("GUILD_ID"))
+CHANNEL_ID = int(os.getenv("CHANNEL_ID"))
+LOG_CHANNEL_ID = int(os.getenv("LOG_CHANNEL_ID"))
 
 EMOJI_ROLE_MAP = {
     "<:corona:725994542909882419>": "TestRole",
@@ -21,6 +22,9 @@ EMOJI_ROLE_MAP = {
 
 @bot.event
 async def on_ready():
+    global log_channel
+    log_channel = bot.get_channel(LOG_CHANNEL_ID)
+    log(f"✅ Bot is online as {bot.user}")
     print(f"Bot is online as {bot.user}")
 
     guild = bot.get_guild(GUILD_ID)
@@ -28,14 +32,14 @@ async def on_ready():
     try:
         message = await channel.fetch_message(MESSAGE_ID)
     except Exception as e:
-        print(f"Failed to fetch message: {e}")
+        log(f"Failed to fetch message: {e}")
         return
 
     for emoji in EMOJI_ROLE_MAP.keys():
         try:
             await message.add_reaction(emoji)
         except Exception as e:
-            print(f"Failed to add reaction {emoji}: {e}")
+            log(f"Failed to add reaction {emoji}: {e}")
 
 @bot.event
 async def on_raw_reaction_add(payload):
@@ -53,7 +57,7 @@ async def on_raw_reaction_add(payload):
 
     if role and member and not member.bot:
         await member.add_roles(role)
-        print(f"Added role {role_name} to {member}")
+        log(f"Added role {role_name} to {member}")
 
 @bot.event
 async def on_raw_reaction_remove(payload):
@@ -71,6 +75,11 @@ async def on_raw_reaction_remove(payload):
 
     if role and member and not member.bot:
         await member.remove_roles(role)
-        print(f"Removed role {role_name} from {member}")
+        log(f"Removed role {role_name} from {member}")
+
+async def log(message: str):
+    print(message)
+    if log_channel:
+        await log_channel.send(message)
 
 bot.run(os.getenv("DISCORD_TOKEN"))
