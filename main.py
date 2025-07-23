@@ -9,7 +9,7 @@ intents.reactions = True
 
 bot = commands.Bot(command_prefix="!", intents=intents)
 
-MESSAGE_ID = os.getenv("MESSAGE_ID") 
+MESSAGE_ID = int(os.getenv("MESSAGE_ID"))
 EMOJI = "✅"
 ROLE_NAME = os.getenv("ROLE_NAME")
 
