@@ -37,4 +37,5 @@ async def on_raw_reaction_remove(payload):
     if role and member and not member.bot:
         await member.remove_roles(role)
 
+print(f"Token: {os.getenv('DISCORD_TOKEN')}")
 bot.run(os.getenv("DISCORD_TOKEN"))
