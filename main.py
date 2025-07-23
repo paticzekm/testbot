@@ -25,7 +25,6 @@ async def on_ready():
     global log_channel
     log_channel = bot.get_channel(LOG_CHANNEL_ID)
     await log(f"✅ Bot is online as {bot.user}")
-    print(f"Bot is online as {bot.user}")
 
     guild = bot.get_guild(GUILD_ID)
     channel = guild.get_channel(CHANNEL_ID)
@@ -57,7 +56,7 @@ async def on_raw_reaction_add(payload):
 
     if role and member and not member.bot:
         await member.add_roles(role)
-        await log(f"Added role {role_name} to {member}")
+        await log(f"Added role {role_name} to {member.mention}")
 
 @bot.event
 async def on_raw_reaction_remove(payload):
@@ -75,7 +74,7 @@ async def on_raw_reaction_remove(payload):
 
     if role and member and not member.bot:
         await member.remove_roles(role)
-        await log(f"Removed role {role_name} from {member}")
+        await log(f"Removed role {role_name} from {member.mention}")
 
 async def log(message: str):
     print(message)
